@@ -1,0 +1,12 @@
+theme: jekyll-theme-minimal
+title: 构建简单的数据库
+description: 使用 C 语言从头实现类 sqlite 数据库
+collections:
+  parts:
+    output: true
+defaults:
+  - scope:
+      path: ""
+      type: parts
+    values:
+      layout: default
