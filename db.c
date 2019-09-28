@@ -261,7 +261,7 @@ db_close(Table *table)
     if (num_additional_rows > 0) {
         uint32_t page_num = num_full_pages;
         if (pager->pages[page_num] != NULL) {
-            pager_flush(pager, page_num, PAGE_SIZE);
+            pager_flush(pager, page_num, num_additional_rows * ROW_SIZE);
             free(pager->pages[page_num]);
             pager->pages[page_num] = NULL;
         }
@@ -354,8 +354,8 @@ serialize_row(Row *source, void *destination)
 {
     char *dest = (char *) destination;
     memcpy(dest + ID_OFFSET, &(source->id), ID_SIZE);
-    memcpy(dest + USERNAME_OFFSET, &(source->username), USERNAME_SIZE);
-    memcpy(dest + EMAIL_OFFSET, &(source->email), EMAIL_SIZE);
+    strncpy(dest + USERNAME_OFFSET, source->username, USERNAME_SIZE);
+    strncpy(dest + EMAIL_OFFSET, source->email, EMAIL_SIZE);
 }
 
 void
