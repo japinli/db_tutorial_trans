@@ -120,7 +120,7 @@ void *
 -    for (uint32_t i = 0; i < table->num_rows; i++) {
 -        deserialize_row(row_slot(table, i), &row);
 +    while (!(cursor->end_of_table)) {
-+        deserialize_row(cursor(cursor), &row);
++        deserialize_row(cursor_value(cursor), &row);
          print_row(&row);
 +        cursor_advance(cursor);
  }
@@ -191,7 +191,7 @@ index c13021c..14ab8d1 100644
 -    for (uint32_t i = 0; i < table->num_rows; i++) {
 -        deserialize_row(row_slot(table, i), &row);
 +    while (!(cursor->end_of_table)) {
-+        deserialize_row(cursor(cursor), &row);
++        deserialize_row(cursor_value(cursor), &row);
          print_row(&row);
 +        cursor_advance(cursor);
      }
