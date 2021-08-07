@@ -949,7 +949,7 @@ index 9b4a206..38f8176 100644
 
 测试用例。
 
-```
+```diff
 diff --git a/spec/main_spec.rb b/spec/main_spec.rb
 index 5e13329..652f9fa 100644
 --- a/spec/main_spec.rb
@@ -1003,7 +1003,7 @@ index 5e13329..652f9fa 100644
 
 ## 格式化后的完整 Diff
 
-```
+```diff
 diff --git a/db.c b/db.c
 index 9b4a206..f85211b 100644
 --- a/db.c
