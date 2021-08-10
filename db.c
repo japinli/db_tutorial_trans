@@ -215,6 +215,7 @@ uint32_t *internal_node_right_child(void *node);
 uint32_t *internal_node_cell(void *node, uint32_t cell_num);
 uint32_t *internal_node_child(void *node, uint32_t child_num);
 uint32_t *internal_node_key(void *node, uint32_t key_num);
+Cursor *internal_node_find(Table *table, uint32_t page_num, uint32_t key);
 
 
 void
@@ -647,8 +648,7 @@ table_find(Table *table, uint32_t key)
     if (get_node_type(root_node) == NODE_LEAF) {
         return leaf_node_find(table, root_page_num, key);
     } else {
-        printf("Need to implement searching an internal node\n");
-        exit(EXIT_FAILURE);
+        return internal_node_find(table, root_page_num, key);
     }
 }
 
@@ -944,6 +944,38 @@ uint32_t *
 internal_node_key(void *node, uint32_t key_num)
 {
     return internal_node_cell(node, key_num) + INTERNAL_NODE_CHILD_SIZE;
+}
+
+Cursor *
+internal_node_find(Table *table, uint32_t page_num, uint32_t key)
+{
+    void     *node = get_page(table->pager, page_num);
+    uint32_t  num_keys = *internal_node_num_keys(node);
+    uint32_t  child_num;
+    void     *child;
+
+    /* Binary search to find index of child to search. */
+    uint32_t  min_index = 0;
+    uint32_t  max_index = num_keys; /* There is one more child than key. */
+
+    while (min_index != max_index) {
+        uint32_t index = (min_index + max_index) / 2;
+        uint32_t key_to_right = *internal_node_key(node, index);
+        if (key_to_right >= key) {
+            max_index = index;
+        } else {
+            min_index = index + 1;
+        }
+    }
+
+    child_num = *internal_node_child(node, min_index);
+    child = get_page(table->pager, child_num);
+    switch (get_node_type(child)) {
+    case NODE_LEAF:
+        return leaf_node_find(table, child_num, key);
+    case NODE_INTERNAL:
+        return internal_node_find(table, child_num, key);
+    }
 }
 
 int
